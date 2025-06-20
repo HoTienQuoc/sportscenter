@@ -10,4 +10,6 @@ public interface ProductService {
     ProductResponse getProductById(Integer productId);
 
     Page<ProductResponse> getAllProducts(Pageable pageable);
+
+    List<ProductResponse> 
 }
