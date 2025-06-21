@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,13 +47,25 @@ public class ProductController {
     @GetMapping()
     public ResponseEntity<Page<ProductResponse>> getProducts(
         @PageableDefault(size=10) Pageable pageable,
-        @RequestParam(name="keyword", required = false) String keyword
+        @RequestParam(name="keyword", required = false) String keyword,
+        @RequestParam(name="sort", defaultValue = "name") String sort,
+        @RequestParam(name="oder", defaultValue = "asc" ) String order
     ) {
-        Page<ProductResponse> productResponsePage = null;
+        Page<ProductResponse> productResponsePage;
 
         if(keyword!=null && !keyword.isEmpty()){
             List<ProductResponse> productResponses = productService.searchProductsByName(keyword);
             productResponsePage = new PageImpl<>(productResponses,pageable,productResponses.size());
+        }
+        else{
+            //if no search criteria, then retrieve based on sorting options
+            Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Sort sorting = Sort.by(direction,sort);
+            productResponsePage = productService.getAllProducts(
+                PageRequest.of(
+                    Pageable.unpaged().getPageNumber(), pageable.getPageSize(), sorting
+                )
+            );
         }
 
         return new ResponseEntity<>(productResponsePage, HttpStatus.OK);
