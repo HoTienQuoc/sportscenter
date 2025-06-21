@@ -1,5 +1,6 @@
 package com.ecomerce.sportscenter.service;
 
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,5 +12,5 @@ public interface ProductService {
 
     Page<ProductResponse> getAllProducts(Pageable pageable);
 
-    List<ProductResponse> 
+    List<ProductResponse> searchProductsByName(String keyword);
 }

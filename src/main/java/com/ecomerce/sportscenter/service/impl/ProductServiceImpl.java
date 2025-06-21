@@ -2,6 +2,10 @@ package com.ecomerce.sportscenter.service.impl;
 
 
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,5 +62,19 @@ public class ProductServiceImpl implements ProductService{
         ProductResponse productResponse = convertToProductResponse(product);
         return productResponse;
     }
+
+    @Override
+    public List<ProductResponse> searchProductsByName(String keyword) {
+        log.info("Searching product(s) by name: {}",keyword);
+        //Call custom query method
+        List<Product> products = productRepository.searchByName(keyword);
+
+        List<ProductResponse> productResponses = products.stream()
+                        .map(this::convertToProductResponse)
+                        .collect(Collectors.toList());
+        return productResponses;
+    }
+
+    
 
 }
