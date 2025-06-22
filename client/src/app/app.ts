@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { NavBar } from "./nav-bar/nav-bar";
 
 @Component({
@@ -7,6 +8,20 @@ import { NavBar } from "./nav-bar/nav-bar";
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
+export class App implements OnInit{
   protected title = 'Sports Center';
+  products: any[] = [];
+  constructor(private http: HttpClient){}
+  ngOnInit(): void {
+    this.http
+      .get<any[]>("http://localhost:8080/api/products")
+      .subscribe({
+        next: (data)=>{
+          this.products = data;
+        },
+        error:(error)=>{
+          console.log("Error fetching data: ",error);
+        }
+      });
+  }
 }
