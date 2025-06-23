@@ -1,7 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { Product } from './shared/models/product';
-import { ProductData } from './shared/models/productData';
+import { Component } from '@angular/core';
 import { CoreModule } from './core/core-module';
 import { StoreModule } from './store/store-module';
 
@@ -11,10 +8,10 @@ import { StoreModule } from './store/store-module';
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App implements OnInit{
+export class App{
   protected title = 'Sports Center';
-  constructor(private http: HttpClient){}
-  ngOnInit(): void {
+  constructor(){}
+  ngOnInit(){
     
   }
 }
