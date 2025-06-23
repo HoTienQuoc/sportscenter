@@ -63,7 +63,7 @@ public class ProductController {
             Sort sorting = Sort.by(direction,sort);
             productResponsePage = productService.getAllProducts(
                 PageRequest.of(
-                    Pageable.unpaged().getPageNumber(), pageable.getPageSize(), sorting
+                    pageable.getPageNumber(), pageable.getPageSize(), sorting
                 )
             );
         }

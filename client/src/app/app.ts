@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NavBar } from "./nav-bar/nav-bar";
+import { Product } from './models/product';
+import { ProductData } from './models/productData';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +12,7 @@ import { NavBar } from "./nav-bar/nav-bar";
 })
 export class App implements OnInit{
   protected title = 'Sports Center';
-  products: any[] = [];
+  products: Product[] = [];
   constructor(private http: HttpClient){}
   ngOnInit(): void {
     this.http
@@ -26,6 +28,4 @@ export class App implements OnInit{
   }
 }
 
-interface ProductData{
-  content: any[];
-}
+
