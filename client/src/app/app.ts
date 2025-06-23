@@ -14,14 +14,18 @@ export class App implements OnInit{
   constructor(private http: HttpClient){}
   ngOnInit(): void {
     this.http
-      .get<any[]>("http://localhost:8080/api/products")
+      .get<ProductData>("http://localhost:8080/api/products")
       .subscribe({
         next: (data)=>{
-          this.products = data;
+          this.products = data.content;
         },
         error:(error)=>{
           console.log("Error fetching data: ",error);
         }
       });
   }
+}
+
+interface ProductData{
+  content: any[];
 }
