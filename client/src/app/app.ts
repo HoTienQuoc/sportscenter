@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { NavBar } from "./nav-bar/nav-bar";
+import { NavBar } from "./core/nav-bar/nav-bar";
 import { Product } from './models/product';
 import { ProductData } from './models/productData';
+import { CoreModule } from './core/core-module';
 
 @Component({
   selector: 'app-root',
-  imports: [NavBar],
+  imports: [CoreModule],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
