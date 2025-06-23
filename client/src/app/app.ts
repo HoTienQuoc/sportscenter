@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NavBar } from "./core/nav-bar/nav-bar";
-import { Product } from './models/product';
-import { ProductData } from './models/productData';
+import { Product } from './shared/models/product';
+import { ProductData } from './shared/models/productData';
 import { CoreModule } from './core/core-module';
 
 @Component({
