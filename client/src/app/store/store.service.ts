@@ -14,8 +14,11 @@ export class StoreService {
 
   public apiUrl = 'http://localhost:8080/api/products';
 
-  getProducts(): Observable<ProductData>{
-    return this.http.get<ProductData>(this.apiUrl);
+  getProducts(brandId?: number, typeId?: number, url?: string): Observable<ProductData>{
+    // Construct the base URL
+    const apiUrl = url || this.apiUrl;  
+    
+    return this.http.get<ProductData>(apiUrl);
   }
 
   getBrands(){
