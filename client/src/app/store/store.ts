@@ -5,10 +5,11 @@ import { StoreService } from './store.service';
 import { Type } from '../shared/models/type';
 import { FormsModule } from '@angular/forms';
 import { ProductItem } from "./product-item/product-item";
+import { StoreModule } from './store-module';
 
 @Component({
   selector: 'app-store',
-  imports: [FormsModule, ProductItem],
+  imports: [FormsModule, StoreModule],
   templateUrl: './store.html',
   styleUrl: './store.scss'
 })
