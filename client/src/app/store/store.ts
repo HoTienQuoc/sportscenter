@@ -15,9 +15,17 @@ export class Store implements OnInit{
   products: Product[] = [];
   brands: Brand[] = [];
   types: Type[] = [];
+  selectedBrand: Brand | null = null;
+  selectedType: Type | null = null;
+
+
   title = input<string>("");
 
   ngOnInit(): void {
+    //initialize selected Brand and Type
+    this.selectedBrand = null;
+    this.selectedType = null;
+
     this.fetchProducts();
     this.getBrands();
     this.getTypes();
@@ -47,4 +55,17 @@ export class Store implements OnInit{
       error:(error) =>console.log(error)
     });
   }
+
+  selectBrand(brand: Brand){
+    //update the selected brand and fetch the products
+    this.selectedBrand = brand; 
+    this.fetchProducts();
+  }
+
+  selectType(type: Type){
+    //update the selected type and fetch the products
+    this.selectedType = type; 
+    this.fetchProducts();
+  }
 }
+
