@@ -1,6 +1,8 @@
 import { Component, input, OnInit } from '@angular/core';
-import { StoreService } from './store.service';
+import { Brand } from '../shared/models/brand';
 import { Product } from '../shared/models/product';
+import { StoreService } from './store.service';
+import { Type } from '../shared/models/type';
 
 @Component({
   selector: 'app-store',
@@ -11,9 +13,17 @@ import { Product } from '../shared/models/product';
 export class Store implements OnInit{
   constructor(private storeService: StoreService){}
   products: Product[] = [];
+  brands: Brand[] = [];
+  types: Type[] = [];
   title = input<string>("");
 
   ngOnInit(): void {
+    this.fetchProducts();
+    this.getBrands();
+    this.getTypes();
+  }
+
+  fetchProducts(){
     this.storeService.getProducts().subscribe({
       next: (data)=>{
         this.products = data.content;
@@ -21,6 +31,20 @@ export class Store implements OnInit{
       error:(error)=>{
         console.log("Error fetching data: ",error);
       }
+    });
+  }
+
+  getBrands(){
+    this.storeService.getBrands().subscribe({
+      next:(response)=>(this.brands = [{id: 0, name:'All'}, ...response]),
+      error:(error) =>console.log(error)
+    });
+  }
+
+  getTypes(){
+    this.storeService.getTypes().subscribe({
+      next:(response)=>(this.types = [{id: 0, name:'All'}, ...response]),
+      error:(error) =>console.log(error)
     });
   }
 }
