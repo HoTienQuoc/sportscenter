@@ -13,4 +13,12 @@ public interface ProductService {
     Page<ProductResponse> getAllProducts(Pageable pageable);
 
     List<ProductResponse> searchProductsByName(String keyword);
+
+    List<ProductResponse> searchProductsByBrandTypeAndName(Integer brandId, Integer typeId, String keyword);
+
+    List<ProductResponse> searchProductsByBrandType(Integer brandId, Integer typeId);
+
+    List<ProductResponse> searchProductsByBrand(Integer brandId);
+
+    List<ProductResponse> searchProductsByType(Integer typeId);
 }

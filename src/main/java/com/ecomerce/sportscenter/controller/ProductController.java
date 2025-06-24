@@ -48,12 +48,33 @@ public class ProductController {
     public ResponseEntity<Page<ProductResponse>> getProducts(
         @PageableDefault(size=10) Pageable pageable,
         @RequestParam(name="keyword", required = false) String keyword,
+        @RequestParam(name="brandId", required = false) Integer brandId,
+        @RequestParam(name="typeId", required = false) Integer typeId,
         @RequestParam(name="sort", defaultValue = "name") String sort,
         @RequestParam(name="oder", defaultValue = "asc" ) String order
     ) {
         Page<ProductResponse> productResponsePage;
-
-        if(keyword!=null && !keyword.isEmpty()){
+        if(brandId!=null && typeId!=null && keyword!=null && !keyword.isEmpty()){
+            //search by brand, type and keyword
+            List<ProductResponse> productResponses = productService.searchProductsByBrandTypeAndName(brandId,typeId,keyword);
+            productResponsePage = new PageImpl<>(productResponses,pageable,productResponses.size());
+        }
+        else if(brandId!=null && typeId!=null){
+            //search by brand, type and keyword
+            List<ProductResponse> productResponses = productService.searchProductsByBrandType(brandId,typeId);
+            productResponsePage = new PageImpl<>(productResponses,pageable,productResponses.size());
+        }
+        else if(brandId!=null) {
+            //search by brand
+            List<ProductResponse> productResponses = productService.searchProductsByBrand(brandId);
+            productResponsePage = new PageImpl<>(productResponses, pageable, productResponses.size());
+        }
+        else if(typeId!=null) {
+            //search by type
+            List<ProductResponse> productResponses = productService.searchProductsByType(typeId);
+            productResponsePage = new PageImpl<>(productResponses, pageable, productResponses.size());
+        }
+        else if(keyword!=null && !keyword.isEmpty()){
             List<ProductResponse> productResponses = productService.searchProductsByName(keyword);
             productResponsePage = new PageImpl<>(productResponses,pageable,productResponses.size());
         }
