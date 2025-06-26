@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { ProductData } from '../shared/models/productData';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { Product } from '../shared/models/product';
 import { Brand } from '../shared/models/brand';
 import { Type } from '../shared/models/type';
 

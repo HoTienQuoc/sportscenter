@@ -4,7 +4,7 @@ import { StoreModule } from './store/store-module';
 
 @Component({
   selector: 'app-root',
-  imports: [CoreModule, StoreModule],
+  imports: [CoreModule,StoreModule],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

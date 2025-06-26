@@ -4,11 +4,11 @@ import { Product } from '../shared/models/product';
 import { StoreService } from './store.service';
 import { Type } from '../shared/models/type';
 import { FormsModule } from '@angular/forms';
-import { StoreModule } from './store-module';
+import { ProductItem } from "./product-item/product-item";
 
 @Component({
   selector: 'app-store',
-  imports: [FormsModule, StoreModule],
+  imports: [FormsModule, ProductItem],
   templateUrl: './store.html',
   styleUrl: './store.scss'
 })
