@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ProductData } from '../shared/models/productData';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Brand } from '../shared/models/brand';
 import { Type } from '../shared/models/type';
 
@@ -9,25 +9,53 @@ import { Type } from '../shared/models/type';
   providedIn: 'root'
 })
 export class StoreService {
-  constructor(private http: HttpClient) { }
-
   public apiUrl = 'http://localhost:8080/api/products';
 
-  getProducts(brandId?: number, typeId?: number, url?: string): Observable<ProductData>{
-    // Construct the base URL
-    const apiUrl = url || this.apiUrl;  
-    
-    return this.http.get<ProductData>(apiUrl);
+  constructor(private http: HttpClient) { }
+
+  getProducts(
+    brandId?: number,
+    typeId?: number,
+    page: number = 0,
+    size: number = 5,
+    keyword?: string,
+    sort?: string,
+    order?: string
+  ): Observable<ProductData> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    if (brandId && brandId !== 0) {
+      params = params.set('brandId', brandId.toString());
+    }
+
+    if (typeId && typeId !== 0) {
+      params = params.set('typeId', typeId.toString());
+    }
+
+    if (keyword && keyword.trim() !== '') {
+      params = params.set('keyword', keyword.trim());
+    }
+
+    if (sort) {
+      params = params.set('sort', sort);
+    }
+
+    if (order) {
+      params = params.set('order', order);
+    }
+
+    return this.http.get<ProductData>(this.apiUrl, { params });
   }
 
-  getBrands(){
+  getBrands(): Observable<Brand[]> {
     const url = `${this.apiUrl}/brands`;
     return this.http.get<Brand[]>(url);
   }
 
-  getTypes(){
+  getTypes(): Observable<Type[]> {
     const url = `${this.apiUrl}/types`;
     return this.http.get<Type[]>(url);
   }
-
 }

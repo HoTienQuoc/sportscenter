@@ -1,122 +1,124 @@
-import { Component, input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { Brand } from '../shared/models/brand';
 import { Product } from '../shared/models/product';
 import { StoreService } from './store.service';
 import { Type } from '../shared/models/type';
 import { FormsModule } from '@angular/forms';
 import { ProductItem } from "./product-item/product-item";
+import { StoreModelService } from './store.model.service';
 
 @Component({
   selector: 'app-store',
   imports: [FormsModule, ProductItem],
+
   templateUrl: './store.html',
-  styleUrl: './store.scss'
+  styleUrls: ['./store.scss']
 })
-export class Store implements OnInit{
-  constructor(private storeService: StoreService){}
-  products: Product[] = [];
-  brands: Brand[] = [];
-  types: Type[] = [];
-  selectedBrand: Brand | null = null;
-  selectedType: Type | null = null;
-  selectedSort = 'asc'; //default value
-  search = '';
-
-
-
+export class Store implements OnInit {
   title = input<string>("");
 
-  ngOnInit(): void {
-    // Initialize selected brand and type to "All"
-    this.selectedBrand = { id: 0, name: 'All' };
-    this.selectedType = { id: 0, name: 'All' };
+  // products: Product[] = [];
+  // brands: Brand[] = [];
+  // types: Type[] = [];
 
-    // Check if both selectedBrand and selectedType are "All" before making the initial fetch
-    if (this.selectedBrand.id === 0 && this.selectedType.id === 0) {
-      this.fetchProducts(); // Fetch all records without brand and type filtering
-    } else {
-      // Fetch products with the selected brand and type
-      this.fetchProducts();
-    }
+  // selectedBrand: Brand | null = { id: 0, name: 'All' };
+  // selectedType: Type | null = { id: 0, name: 'All' };
+  // selectedSort = 'asc'; // default value
+  // search = '';
+
+  // currentPage = 0;
+  // pageSize = 5;
+  // totalPages = 0;
+
+  constructor(private storeService: StoreService, public storeData: StoreModelService) {}
+
+  ngOnInit(): void {
     this.getBrands();
     this.getTypes();
+    this.fetchProducts();
+  }
+  goToPage(page: number): void {
+    if (this.storeData.currentPage >= 0 && page < this.storeData.totalPages) {
+      this.storeData.currentPage = page;
+      this.fetchProducts();
+    }
+  }
+  
+  previousPage(): void {
+    if (this.storeData.currentPage > 0) {
+      this.storeData.currentPage--;
+      this.fetchProducts();
+    }
+  }
+  
+  nextPage(): void {
+    if (this.storeData.currentPage < this.storeData.totalPages - 1) {
+      this.storeData.currentPage++;
+      this.fetchProducts();
+    }
+  }
+  
+
+  fetchProducts(): void {
+    const brandId = this.storeData.selectedBrand?.id;
+    const typeId = this.storeData.selectedType?.id;
+    const keyword = this.storeData.search;
+    const sort = 'name'; // hoặc lấy từ biến nếu có thay đổi
+    const order = this.storeData.selectedSort || 'asc';
+
+    this.storeService
+      .getProducts(brandId, typeId, this.storeData.currentPage, this.storeData.pageSize, keyword, sort, order)
+      .subscribe({
+        next: (data) => {
+          this.storeData.products = data.content;
+          this.storeData.totalPages = data.totalPages;
+        },
+        error: (error) => {
+          console.error('Error fetching products:', error);
+        }
+      });
   }
 
-  fetchProducts(){
-    //Pass the selected brand/type ids
-    const brandId = this.selectedBrand?.id;
-    const typeId = this.selectedType?.id;
-
-    //construct the base url
-    let url = `${this.storeService.apiUrl}?`;
-
-    //check the brand and type
-    if(brandId && brandId !==0){
-      url+= `brandId=${brandId}&`;
-    }
-
-    if(typeId && typeId !==0){
-      url+= `typeId=${typeId}&`;
-    }
-
-    if(this.selectedSort){
-      url+= `sort=name&order=${this.selectedSort}&`;
-    }
-
-    //search 
-    if(this.search){
-      url+= `keyword=${this.search}&`;
-    }
-
-    // Remove the trailing '&' if it exists
-    if (url.endsWith('&')) {
-      url = url.slice(0, -1);
-    }  
-
-    this.storeService.getProducts(brandId, typeId, url).subscribe({
-      next: (data) => {
-        this.products = data.content;
-      },
-      error: (error) => {
-        console.error('Error fetching data:', error);
-      },
-    });
-  }
-
-  getBrands(){
+  getBrands(): void {
     this.storeService.getBrands().subscribe({
-      next:(response)=>(this.brands = [{id: 0, name:'All'}, ...response]),
-      error:(error) =>console.log(error)
+      next: (response) => (this.storeData.brands = [{ id: 0, name: 'All' }, ...response]),
+      error: (error) => console.log(error)
     });
   }
 
-  getTypes(){
+  getTypes(): void {
     this.storeService.getTypes().subscribe({
-      next:(response)=>(this.types = [{id: 0, name:'All'}, ...response]),
-      error:(error) =>console.log(error)
+      next: (response) => (this.storeData.types = [{ id: 0, name: 'All' }, ...response]),
+      error: (error) => console.log(error)
     });
   }
 
-  selectBrand(brand: Brand){
-    //update the selected brand and fetch the products
-    this.selectedBrand = brand;
+  selectBrand(brand: Brand): void {
+    this.storeData.selectedBrand = brand;
+    this.storeData.currentPage = 0;
     this.fetchProducts();
   }
 
-  selectType(type: Type){
-    //update the selected brand and fetch the products
-    this.selectedType = type;
+  selectType(type: Type): void {
+    this.storeData.selectedType = type;
+    this.storeData.currentPage = 0;
     this.fetchProducts();
   }
-  onSortChange(){
+
+  onSortChange(): void {
+    this.storeData.currentPage = 0;
     this.fetchProducts();
   }
-  onSearch(){
+
+  onSearch(): void {
+    this.storeData.currentPage = 0;
     this.fetchProducts();
   }
-  onReset(){
-    this.search = '';
+
+  onReset(): void {
+    this.storeData.search = '';
+    this.storeData.currentPage = 0;
     this.fetchProducts();
   }
+
 }
-
