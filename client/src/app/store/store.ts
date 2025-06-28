@@ -23,6 +23,7 @@ export class Store implements OnInit{
   search = '';
 
 
+
   title = input<string>("");
 
   ngOnInit(): void {
