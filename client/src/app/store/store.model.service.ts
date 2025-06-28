@@ -1,8 +1,12 @@
+import { Injectable } from "@angular/core";
 import { Brand } from "../shared/models/brand";
 import { Product } from "../shared/models/product";
 import { StoreData } from "../shared/models/storeData";
 import { Type } from "../shared/models/type";
 
+@Injectable({
+  providedIn: 'root'
+})
 export class StoreModelService implements StoreData{
   products: Product[] = [];
   brands: Brand[] = [];
