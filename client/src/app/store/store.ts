@@ -6,7 +6,7 @@ import { Type } from '../shared/models/type';
 import { FormsModule } from '@angular/forms';
 import { ProductItem } from "./product-item/product-item";
 import { StoreModelService } from './store.model.service';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-store',

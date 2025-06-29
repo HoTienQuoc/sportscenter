@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Brand } from '../shared/models/brand';
 import { Type } from '../shared/models/type';
+import { Product } from '../shared/models/product';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +49,11 @@ export class StoreService {
 
     return this.http.get<ProductData>(this.apiUrl, { params });
   }
+
+  getProduct(id: number){
+    return this.http.get<Product>(this.apiUrl + "/"+ id);
+  }
+
 
   getBrands(): Observable<Brand[]> {
     const url = `${this.apiUrl}/brands`;

@@ -5,7 +5,6 @@ import { ProductDetails } from './store/product-details/product-details';
 
 export const routes: Routes = [
     {path:"", component:HomeComponent}, 
-    {path:"store", component:Store}, 
-    {path:"store/:id", component:ProductDetails}, 
+    {path:"store", loadChildren:()=>import('./store/store-module').then(m=>m.StoreModule)}, 
     {path:"**", redirectTo:"", pathMatch:'full'}, 
 ];
