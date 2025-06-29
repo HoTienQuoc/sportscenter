@@ -10,7 +10,7 @@ import { ServerError } from './server-error/server-error';
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule,NavBar,NotFound,ServerError
+    CommonModule,NavBar,NotFound,ServerError,RouterModule,
   ],
   exports: [NavBar,NotFound,ServerError]
 })
