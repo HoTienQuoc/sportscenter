@@ -19,6 +19,7 @@
     "@angular/platform-server": "^20.0.0",
     "@angular/router": "^20.0.0",
     "@angular/ssr": "^20.0.2",
+    "@paralleldrive/cuid2": "^2.2.2",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.6",
     "bootswatch": "^5.3.7",
