@@ -37,11 +37,6 @@
             </span>
         </a>
       </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" href="#">
-          <i class="fa fa-sign-out-alt"></i> Logout
-        </a>
-      </li>
       @if((currentUser$| async) === null){
         <ng-container>
           <li class="nav-item" routerLinkActive="active">
