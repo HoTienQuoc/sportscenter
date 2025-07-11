@@ -9,6 +9,7 @@ export const routes: Routes = [
     {path:"store", loadChildren:()=>import('./store/store-module').then(m=>m.StoreModule)}, 
     {path:"basket", loadChildren:()=>import('./basket/basket-module').then(m=>m.BasketModule)}, 
     {path:"account", loadChildren:()=>import('./account/account-module').then(m=>m.AccountModule)}, 
+    {path:"checkout", loadChildren:()=>import('./checkout/checkout-module').then(m=>m.CheckoutModule)}, 
     {path:"not-found", component:NotFound}, 
     {path:"server-error", component:ServerError}, 
     {path:"**", redirectTo:"", pathMatch:'full'}, 

@@ -7,5 +7,8 @@ import { Component } from '@angular/core';
   styleUrl: './checkout.component.scss'
 })
 export class CheckoutComponent {
-
+  currentStep: 'address' | 'shipment' | 'review' = 'address';
+  setCurrentStep(step: 'address' | 'shipment' | 'review'){
+    this.currentStep = step;
+  }
 }

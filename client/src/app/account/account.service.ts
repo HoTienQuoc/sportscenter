@@ -8,11 +8,18 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AccountService {
+  redirectUrl: string | null = null;
   apiUrl = 'http://localhost:8080/auth';
   private currentUserSource = new BehaviorSubject<User | null >(null);
   currentUser$ = this.currentUserSource.asObservable();
   
   constructor(private http: HttpClient, private router: Router) { }
+
+  isAuthenticated(): boolean{
+    //whether user is authenticated or not
+    const token = localStorage.getItem('token');
+    return !!token;
+  }
 
   login(values: any){
     return this.http.post<User>(this.apiUrl + '/login', values).pipe(
