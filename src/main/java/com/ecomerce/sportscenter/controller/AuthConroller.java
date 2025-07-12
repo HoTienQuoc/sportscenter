@@ -7,10 +7,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ecomerce.sportscenter.response.JwtRequest;
 import com.ecomerce.sportscenter.response.JwtResponse;
@@ -18,11 +15,11 @@ import com.ecomerce.sportscenter.security.JwtHelper;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthConroller {
     private final UserDetailsService userDetailsService;
     private final AuthenticationManager manager;
     private final JwtHelper jwtHelper;
-    public AuthController(UserDetailsService userDetailsService, AuthenticationManager manager, JwtHelper jwtHelper) {
+    public AuthConroller(UserDetailsService userDetailsService, AuthenticationManager manager, JwtHelper jwtHelper) {
         this.userDetailsService = userDetailsService;
         this.manager = manager;
         this.jwtHelper = jwtHelper;
@@ -37,6 +34,25 @@ public class AuthController {
                 .token(token)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<UserDetails> getUserDetails(@RequestHeader("Authorization") String tokenHeader) {
+        String token = extractTokenFromHeader(tokenHeader);
+        if (token != null) {
+            String username = jwtHelper.getUserNameFromToken(token);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            return new ResponseEntity<>(userDetails, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private String extractTokenFromHeader(String tokenHeader) {
+        if (tokenHeader != null && tokenHeader.startsWith("Bearer ")) {
+            return tokenHeader.substring(7); // Remove "Bearer " prefix
+        }
+        return null;
     }
 
     private void authenticate(String username, String password) {
