@@ -27,7 +27,9 @@ export class LoginComponent {
   onSubmit(){
     this.accountService.login(this.loginForm.value).subscribe({
       next: user => {
-        this.router.navigateByUrl('/store');
+        const redirect = this.accountService.redirectUrl ? this.accountService.redirectUrl : '/store';
+        this.router.navigateByUrl(redirect);
+        this.accountService.redirectUrl = null; //clearing the redirect url post navigation
       },
       error: () =>{
       }

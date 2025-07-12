@@ -11,16 +11,42 @@ export class BasketService {
   apiUrl = 'http://localhost:8080/api/baskets';
   private basketSource = new BehaviorSubject<Basket | null>(null);
   basketSource$ = this.basketSource.asObservable();
-  private basketTotalSource = new BehaviorSubject<BasketTotals | null>(null);
+  private basketTotalSource = new BehaviorSubject<BasketTotals>({
+    subTotal: 0,
+    shipping: 0,
+    total: 0
+  });
   basketTotalSource$ = this.basketTotalSource.asObservable();
 
-  constructor(private http: HttpClient) { }
-  
+  constructor(private http: HttpClient) {
+    // Check if there's a basket in local storage when the service is initialized
+    const storedBasket = localStorage.getItem('basket');
+    if (storedBasket) {
+      const parsedBasket = JSON.parse(storedBasket);
+      this.basketSource.next(parsedBasket);
+      this.calculateTotals();
+    }
+   }
+
+  updateShippingPrice(shippingPrice: number): void {
+    // Update the shipping price in the basketTotalSubject
+    const updatedBasketTotal = this.basketTotalSource.value;
+    updatedBasketTotal.shipping = shippingPrice;
+    updatedBasketTotal.total = updatedBasketTotal.subTotal + shippingPrice;
+    this.basketTotalSource.next(updatedBasketTotal);
+  }
+  clearBasket(){
+    this.basketSource.next(null);
+    localStorage.removeItem('basket_id');
+    localStorage.removeItem('basket');
+  }
   getBasket(id: string){
     return this.http.get<Basket>(this.apiUrl+'/'+id).subscribe({
       next: basket => {
         this.basketSource.next(basket);
         this.calculateTotals();
+        // Update the localStorage with the latest basket data
+        localStorage.setItem('basket', JSON.stringify(basket));
       }
     })
   }
@@ -30,6 +56,8 @@ export class BasketService {
       next: basket => {
         this.basketSource.next(basket);
         this.calculateTotals();
+        // Update the localStorage with the latest basket data
+        localStorage.setItem('basket', JSON.stringify(basket));
       }
     })
   }
@@ -98,7 +126,9 @@ export class BasketService {
       //check if the basket is empty after removing the item
       if(basket.items.length === 0){
         //clear the basket from local storage
+        this.basketSource.next(null);
         localStorage.removeItem('basket_id');
+        localStorage.removeItem('basket');        
       }
     }
   }
@@ -109,7 +139,7 @@ export class BasketService {
     const shipping = 0;
     const subTotal = basket.items.reduce((x, y) =>(y.price * y.quantity) + x, 0);
     const total = subTotal + shipping;
-    this.basketTotalSource.next({shipping, subTotal, total});
+    this.basketTotalSource.next({shipping, subTotal: subTotal, total});
   }
   private mapProductToBasket(item: Product): BasketItem {
     return {
