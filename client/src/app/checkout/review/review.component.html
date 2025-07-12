@@ -1,1 +1,39 @@
-<p>review.component works!</p>
+@if(basket){
+<div class="container mt-4">
+    <h2>Your Items</h2>
+    @if(basket.items && basket.items.length > 0){
+        <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Image</th>
+                <th scope="col">Product</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+                <th scope="col">Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for(item of basket.items; track item){
+                <tr>
+                    <td><img [src]="'assets/images/products/' + extractImageName(item)" [alt]="item.name" width="50"></td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price | currency:"INR" }}</td>
+                    <td>{{ (item.quantity * item.price) | currency:"INR" }}</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        </div>
+    }
+  
+    <!-- "Submit" button that navigates to the store page -->
+    <div class="text-center mt-3">
+      <button class="btn btn-success" (click)="submitOrder()">
+        Thank You
+      </button>
+    </div>
+  </div>
+  
+}
